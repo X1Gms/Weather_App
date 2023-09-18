@@ -5,87 +5,269 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather App</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="/styles/main.css">
+
+    
 </head>
 <body>
-    <section class="vh-100">
-        <div class="container py-5 h-100">
-      
-          <div class="row d-flex justify-content-center align-items-center h-100">
-            <div class="col-md-8 col-lg-6 col-xl-4">
-      
-              <h3 class="mb-4 pb-2 fw-normal">Escreva uma Cidade</h3>
-      
-              <form action="weather" method="post" id="myForm">
-              <div class="input-group rounded mb-3">
-                <input type="search" class="form-control rounded" name="city" placeholder="City" aria-label="Search"
-                  aria-describedby="search-addon" value="<%if(locals.data){var dataj = JSON.parse(data)%><%=dataj.location.name%><%}%>" />
-                <input type="submit" id="" class="input-group-text border-0 fw-bold" value="Check!">
-              </div>
 
-              <div class="mb-4 pb-2">
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="weather" id="inlineRadio1"
-                    value="celsius" checked />
-                  <label class="form-check-label">Celsius</label>
-                </div>
-      
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="weather" id="inlineRadio2"
-                    value="fahrenheit" />
-                  <label class="form-check-label">Fahrenheit</label>
-                </div>
-              </div>
-            </form>
-    
-      
-              <%if(locals.data && locals.units){%>
-                <%var dataj = JSON.parse(data)%>
-              <div class="card shadow-0 border">
-                <%if(units === "celsius"){%>
-                <div class="card-body p-4">
-      
-                  <h4 class="mb-1 sfw-normal"><%= dataj.location.name + ", " + dataj.location.country%></h4>
-                  <p class="mb-2">Current temperature: <strong><%= dataj.current.temp_c %>ºC</strong></p>
-                  <p>Localtime: <strong><%= dataj.location.localtime %></strong></p>
-                  <p>Max: <strong><%= dataj.forecast.forecastday[0].day.maxtemp_c %>ºC</strong>, Min: <strong><%= dataj.forecast.forecastday[0].day.mintemp_c %>°C</strong></p>
-                  <p>Wind: <strong><%= dataj.current.wind_kph %> km/h</strong></p>
-                  <p>UV Index: <strong><%= dataj.current.uv %></strong></p>
-      
-                  <div class="d-flex flex-row align-items-center">
-                    <p class="mb-0 me-4"><%= dataj.current.condition.text%></p>
-                    <img src="<%= `https:${dataj.current.condition.icon}`%>"  alt="" class="icon">
-                  </div>
-      
-                </div>
-                <%}else{%>
-                    <div class="card-body p-4">
-      
-                        <h4 class="mb-1 sfw-normal"><%= dataj.location.name + ", " + dataj.location.country%></h4>
-                        <p class="mb-2">Current temperature: <strong><%= dataj.current.temp_f %>ºF</strong></p>
-                        <p>Localtime: <strong><%= dataj.location.localtime %></strong></p>
-                        <p>Max: <strong><%= dataj.forecast.forecastday[0].day.maxtemp_f %>ºF</strong>, Min: <strong><%= dataj.forecast.forecastday[0].day.mintemp_f %>°F</strong></p>
-                        <p>Wind: <strong><%= dataj.current.wind_kph %> km/h</strong></p>
-                        <p>UV Index: <strong><%= dataj.current.uv %></strong></p>
-            
-                        <div class="d-flex flex-row align-items-center flex-wrap">
-                          <p class="mb-0 me-4"><%= dataj.current.condition.text%></p>
-                          <img src="<%= `https:${dataj.current.condition.icon}`%>"  alt="" class="icon">
-                        </div>
-            
-                      </div>
-                <%}%>
-                
-              </div>
-              <%}%>
-      
+    <div class="Main">
+      <form id="weatherForm" action="/weather" method="post"></form>
+        <div class="navbar">
+          
+                <div class="celsius" name="weather" value="Celsius" onclick="selectUnit('Celsius')"><h2>ºC</h2><p>Celsius</p></div>
+                <div class="fahrenhet" name="weather" value="fahrenhet" onclick="selectUnit('Fahrenheit')"><h2>ºF</h2><p>Fahrenheit</p></div>
+          
             </div>
-          </div>
-      
+          </form> 
+        <div class="side">
+          
+            <% const dataJ = JSON.parse(data);
+const w = {
+    "Sunny": "sunny.png",
+    "Clear": "cloud_night.png",
+    "Partly cloudy": "cloud.png",
+    "Cloudy":"windy_cloud.png",
+    "Overcast": "clouds.png",
+    "Mist": "mist.png",
+    "Patchy rain possible": "sun_rain.png",
+    "Patchy snow possible": "snow.png",
+    "Patchy sleet possible": "sun_rain.png",
+    "Patchy freezing drizzle possible": "snow.png",
+    "Thundery outbreaks possible": "thunder_day.png",
+    "Blowing snow": "snow.png",
+    "Blizzard": "windy_cloud.png",
+    "Fog": "fog.png",
+    "Freezing fog": "fog.png",
+    "Patchy light drizzle": "sun_rain.png",
+    "Light drizzle": "rain.png",
+    "Freezing drizzle": "rain.png",
+    "Heavy freezing drizzle": "rain_more.png",
+    "Patchy light rain": "rain.png",
+    "Light rain": "rain.png",
+    "Moderate rain at times": "rain.png",
+    "Moderate rain": "rain.png",
+    "Heavy rain at times": "rain_more.png",
+    "Heavy rain": "rain_more.png",
+    "Light freezing rain": "rain.png",
+    "Moderate or heavy freezing rain": "rain.png",
+    "Light sleet": "rain.png",
+    "Moderate or heavy sleet": "rain.png",
+    "Patchy light snow": "snow.png",
+    "Light snow": "snow.png",
+    "Patchy moderate snow": "snow.png",
+    "Moderate snow": "snow.png",
+    "Patchy heavy snow": "snow.png",
+    "Heavy snow": "snow.png",
+    "Ice pellets": "snow.png",
+    "Light rain shower": "snow.png",
+    "Moderate or heavy rain shower": "snow.png",
+    "Torrential rain shower": "rain_more.png",
+    "Light sleet showers": "rain_more.png",
+    "Moderate or heavy sleet showers": "rain.png",
+    "Light snow showers": "rain.png",
+    "Moderate or heavy snow showers": "rain.png",
+    "Light showers of ice pellets": "rain.png",
+    "Moderate or heavy showers of ice pellets": "rain.png",
+    "Patchy light rain with thunder": "thunder_lightning.png",
+    "Moderate or heavy rain with thunder": "thunder_day.png",
+    "Patchy light snow with thunder": "thunder_day.png",
+    "Moderate or heavy snow with thunder": "thunder_day.png"
+};
+
+            var unit;
+            if (locals.units) {
+                if (units === "Celsius") {
+                    unit = {
+                        letter: "ºC",
+                        func: "c",
+                        name: "Celsius"
+                    };
+                } else if (units === "Fahrenheit") {
+                    unit = {
+                        letter: "ºF",
+                        func: "f",
+                        name: "Fahrenheit"
+                    };
+                }
+            } %>
+          <form onsubmit="return false;" action="/weather" method="post" id="formSearch">
+            <input type="text" class="col-xxl-8 col-12" placeholder="Search for Cities" name="city" value="<%= dataJ.location.name%>">
+            <input type="hidden" name="weather" value="<%= unit.name %>">
+          </form>
+
+          <% if(locals.data){ %>
+            <div class="row">
+
+                
+
+                <div class="col-xxl-8 c firsth d-flex flex-column column1">
+                    <div class="general">
+                        <div class="city">
+                            <h2><%= dataJ.location.name + ', ' + dataJ.location.country%></h2>
+                            <p><%= dataJ.current.condition.text %></p>
+                        </div>
+                        <div class="temperature">
+                            <h1><%= Math.round(dataJ.current["temp_"+ unit.func])+ " " +unit.letter %></h1>
+                        </div>
+                        <div class="image">
+                            <img src="images/<%= w[dataJ.current.condition.text] %>" alt="">
+                        </div>
+                    </div>
+
+                    <div class="hours">
+                        <p>Today's Forecast</p>
+                        <div class="forecast-day">
+                            <div class="forecast-hour">
+                                <p>3:00 AM</p>
+                                <img src="images/<%= w[dataJ.forecast.forecastday[0].hour[3].condition.text]%>" alt="" class="forecast-hour-img">
+                                <h2 class="forecast-temp-hour"><%= Math.round(dataJ.forecast.forecastday[0].hour[3]["temp_"+ unit.func]) + unit.letter %></h2>
+                            </div>
+                            <div class="burger">
+
+                            </div>
+                            <div class="forecast-hour">
+                                <p>6:00 AM</p>
+                                <img src="images/<%= w[dataJ.forecast.forecastday[0].hour[6].condition.text]%>" alt="" class="forecast-hour-img">
+                                <h2 class="forecast-temp-hour"><%= Math.round(dataJ.forecast.forecastday[0].hour[6]["temp_"+ unit.func]) +unit.letter %></h2>
+                            </div>
+                            <div class="burger">
+
+                            </div>
+                            <div class="forecast-hour">
+                                <p>9:00 AM</p>
+                                <img src="images/<%= w[dataJ.forecast.forecastday[0].hour[9].condition.text]%>" alt="" class="forecast-hour-img">
+                                <h2 class="forecast-temp-hour"><%= Math.round(dataJ.forecast.forecastday[0].hour[9]["temp_"+ unit.func]) + unit.letter %></h2>
+                            </div>
+                            <div class="burger">
+
+                            </div>
+                            <div class="forecast-hour">
+                                <p>12:00 PM</p>
+                                <img src="images/<%= w[dataJ.forecast.forecastday[0].hour[12].condition.text]%>" alt="" class="forecast-hour-img">
+                                <h2 class="forecast-temp-hour"><%= Math.round(dataJ.forecast.forecastday[0].hour[12]["temp_"+ unit.func]) + unit.letter %></h2>
+                            </div>
+                            <div class="burger">
+
+                            </div>
+                            <div class="forecast-hour">
+                                <p>03:00 PM</p>
+                                <img src="images/<%= w[dataJ.forecast.forecastday[0].hour[15].condition.text]%>" alt="" class="forecast-hour-img">
+                                <h2 class="forecast-temp-hour"><%= Math.round(dataJ.forecast.forecastday[0].hour[15]["temp_"+ unit.func]) + unit.letter %></h2>
+                            </div>
+                            <div class="burger">
+
+                            </div>
+                            <div class="forecast-hour">
+                                <p>06:00 PM</p>
+                                <img src="images/<%= w[dataJ.forecast.forecastday[0].hour[18].condition.text]%>" alt="" class="forecast-hour-img">
+                                <h2 class="forecast-temp-hour"><%= Math.round(dataJ.forecast.forecastday[0].hour[18]["temp_"+ unit.func]) + unit.letter %></h2>
+                            </div>
+                            <div class="burger">
+
+                            </div>
+                            <div class="forecast-hour">
+                                <p>09:00 PM</p>
+                                <img src="images/<%= w[dataJ.forecast.forecastday[0].hour[21].condition.text]%>" alt="" class="forecast-hour-img">
+                                <h2 class="forecast-temp-hour"><%= Math.round(dataJ.forecast.forecastday[0].hour[21]["temp_"+ unit.func]) + unit.letter %></h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hours">
+                        <p>Air Conditions</p>
+                            <div class="air-conditions">
+                                <div class="air-package">
+                                    <h5><i class="bi bi-thermometer-low"></i> Real Feel</h5>
+                                    <h3><%= Math.round(dataJ.current["temp_"+ unit.func]) + unit.letter%></h3>
+                                </div>
+                                <div class="air-package">
+                                    <h5><i class="bi bi-wind"></i> Wind</h5>
+                                    <h3><%= dataJ.current.wind_kph %> km/h</h3>
+                                </div>
+                            </div>
+                            <div class="air-conditions">
+                                <div class="air-package">
+                                    <h5><i class="bi bi-droplet-fill"></i> Chance of rain</h5>
+                                    <h3><%= dataJ.forecast.forecastday[0].day.daily_chance_of_rain %>%</h3>
+                                </div>
+                                <div class="air-package">
+                                    <h5><i class="bi bi-sun-fill"></i> UV Index</h5>
+                                    <h3><%= dataJ.current.uv %></h3>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+                <div class="col-xxl-4 c column2">
+                    <div class="week-forecast">
+                        <div class="other-info">
+                            <p>Day Cycle</p>
+                            <div class="air-conditions">
+                                <div class="air-package">
+                                    <h5><i class="bi bi-sunrise-fill"></i> Sunrise</h5>
+                                    <h3><%= dataJ.forecast.forecastday[0].astro.sunrise %></h3>
+                                </div>
+                                <div class="air-package">
+                                    <h5><i class="bi bi-sunset-fill"></i></i> Sunset</h5>
+                                    <h3><%= dataJ.forecast.forecastday[0].astro.sunset %></h3>
+                                </div>
+                            </div>
+                            <div class="air-conditions">
+                                <div class="air-package">
+                                    <h5><i class="bi bi-cloud-moon-fill"></i> Moonrise</h5>
+                                    <h3><%= dataJ.forecast.forecastday[0].astro.moonrise %></h3>
+                                </div>
+                                <div class="air-package">
+                                    <h5><i class="bi bi-moon-stars-fill"></i> Moonset</h5>
+                                    <h3><%= dataJ.forecast.forecastday[0].astro.moonset %></h3>
+                                </div>
+                            </div>
+                            <hr>
+                            <p>Other Data</p>
+                            <div class="air-conditions">
+                                <div class="air-package">
+                                    <h5><i class="bi bi-moon"></i> Moonphase</h5>
+                                    <h3><%= dataJ.forecast.forecastday[0].astro.moon_phase %></h3>
+                                </div>
+                                <div class="air-package">
+                                    <h5><i class="bi bi-thermometer-low"></i> Avg Temperature</h5>
+                                    <h3><%= dataJ.forecast.forecastday[0].day["avgtemp_"+ unit.func] + unit.letter%></h3>
+                                </div>
+                            </div>
+                            <div class="air-conditions">
+                                <div class="air-package">
+                                    <h5><i class="bi bi-clock"></i> Hours (last updated)</h5>
+                                    <h3><% var hour = dataJ.current.last_updated %><%= hour.split(' ')[1]; %></h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <% } %>
         </div>
-      </section>
+    </div>
+
+    <script>
+    function selectUnit(unit) {
+        var form = document.getElementById('weatherForm');
+        form.innerHTML += `<input type="hidden" name="weather" value="${unit}">`
+        form.innerHTML += `<input type="hidden" class="col-xxl-8 col-12" placeholder="Search for Cities" name="city" onkeydown="submitForm(event)" value="<%= locals.data ? dataJ.location.name : "" %>">`;
+        form.submit();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+    var form = document.getElementById('formSearch');
+    var cityInput = document.querySelector('input[name="city"]');
+
+    cityInput.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            form.submit();
+        }
+    });
+});
+
+    </script>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-<script>
-</script>
 </html>
