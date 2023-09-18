@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 
 const app = express();
 const port = 3000;
-const apiKey = "abab256e280d4e3686a181820231409";
+const apiKey = "";
 const API_URL = "https://api.weatherapi.com/v1/forecast.json";
 var response = null;
 var units;
